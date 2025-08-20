@@ -56,7 +56,7 @@ export default function LoginPage() {
         ></div>
 
         {/* Formulario - 10px de separación de la línea */}
-        <div style={{ marginLeft: '50px' }}>
+        <div style={{ marginLeft: '40px' }}>
           {/* Título */}
           <h1 
             style={{ 
@@ -66,7 +66,7 @@ export default function LoginPage() {
               color: '#000000',
               margin: 0,
               padding: 0,
-              marginBottom: '76px'
+              marginBottom: '30px' // Reducido para compensar inputs más pequeños
             }}
           >
             Ingresa a tu cuenta
@@ -74,7 +74,7 @@ export default function LoginPage() {
 
           {/* Formulario */}
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column' }}>
-            {/* Campo de email */}
+            {/* Campo de email - Ahora 500x35 */}
             <Input
               type="email"
               name="email"
@@ -84,8 +84,8 @@ export default function LoginPage() {
               placeholder="Correo Electrónico"
             />
 
-            {/* Campo de contraseña */}
-            <div style={{ marginTop: '20px' }}>
+            {/* Campo de contraseña - Ahora 500x35 */}
+            <div style={{ marginTop: '15px' }}>
               <Input
                 type="password"
                 name="password"
@@ -97,8 +97,8 @@ export default function LoginPage() {
               />
             </div>
 
-            {/* Botón */}
-            <div style={{ marginTop: '34px' }}>
+            {/* Botón - Necesita actualizarse también para que coincida */}
+            <div style={{ marginTop: '15px' }}>
               <Button type="submit">
                 Entrar
               </Button>
@@ -114,10 +114,10 @@ export default function LoginPage() {
               color: '#000000',
               margin: 0,
               padding: 0,
-              marginTop: '30px'
+              marginTop: '20px'
             }}
           >
-            <span>¿No tienes cuenta?, </span>
+            <span>¿No tienes una cuenta? </span>
             <Link 
               to="/register" 
               className="hover:underline"
@@ -133,12 +133,7 @@ export default function LoginPage() {
             <span>.</span>
           </p>
         </div>
-      </div>
-
-      {/* 
-      // Código comentado anterior - ya descomentado arriba
-      */}
-      
+      </div>      
     </div>
   );
 }

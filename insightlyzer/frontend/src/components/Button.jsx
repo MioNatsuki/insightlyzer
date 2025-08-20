@@ -9,8 +9,8 @@ const Button = ({ children, type = "button", className = "", ...props }) => {
         fontSize: '32px',
         fontFamily: 'Poppins, sans-serif',
         fontWeight: '600', // SemiBold
-        width: '686px',
-        height: '73px',
+        width: '500px',
+        height: '60px',
         outline: 'none',
         border: 'none'
       }}
