@@ -10,7 +10,7 @@ export default function Layout() {
       display: 'flex', 
       height: '100vh', 
       width: '100vw', 
-      overflow: 'hidden' // Elimina scroll en el contenedor principal
+      overflow: 'hidden' 
     }}>
       {/* Sidebar */}
       <Sidebar />

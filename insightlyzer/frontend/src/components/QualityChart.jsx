@@ -77,7 +77,7 @@ const QualityChart = () => {
       {/* Título DEBAJO de la gráfica */}
       <h2 style={{
         fontFamily: '"Noto Sans", sans-serif',
-        fontSize: '25px',
+        fontSize: '20px',
         fontWeight: '400',
         color: '#2d3748',
         marginTop: '20px', // Espacio entre gráfica y título

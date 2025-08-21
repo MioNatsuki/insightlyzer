@@ -32,7 +32,7 @@ export default function KpiCard({ title, value }) {
         fontSize: '20px',
         fontWeight: '400',
         color: '#4a5568',
-        marginTop: '25px',
+        marginTop: '20px',
         textAlign: 'center',
         margin: '5px 0 0 0', // Solo margen superior de 5px
         padding: '0',

@@ -47,7 +47,7 @@ export default function DashboardPage() {
         <div style={{
             display: 'flex',
             gap: '32px',
-            marginBottom: '74px',
+            marginBottom: '76px',
             flexWrap: 'wrap',
             justifyContent: 'center', // ← ESTA LÍNEA CENTRA LOS ELEMENTOS
             padding: '0',
