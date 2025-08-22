@@ -25,16 +25,18 @@ export default function KpiCard({ title, value }) {
           {value}
         </span>
       </div>
-      
+
       {/* Título DEBAJO de la card */}
       <p style={{
         fontFamily: '"Noto Sans", sans-serif',
         fontSize: '20px',
         fontWeight: '400',
         color: '#4a5568',
-        marginTop: '20px',
+        marginTop: '25px', // ✅ Separación entre la card y el título
+        marginBottom: '0',
+        marginLeft: '0',
+        marginRight: '0',
         textAlign: 'center',
-        margin: '5px 0 0 0', // Solo margen superior de 5px
         padding: '0',
         width: '400px' // Mismo ancho que la card
       }}>

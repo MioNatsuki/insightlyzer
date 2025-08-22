@@ -1,8 +1,13 @@
 // src/components/Footer.jsx
 import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import Modal from "./Modal";
+import PrivacyPolicy from "../features/legal/PrivacyPolicy";
+import TermsAndConditions from "../features/legal/TermsAndConditions";
 
 export default function Footer() {
   // Estilos para el footer
+  const [openModal, setOpenModal] = useState(null);
   const footerStyle = {
     position: 'fixed',
     bottom: 0,
@@ -31,23 +36,43 @@ export default function Footer() {
 
   return (
     <footer style={footerStyle}>
-      <Link 
-        to="/privacy-policy" 
-        style={linkStyle}
-        onMouseOver={(e) => e.target.style.color = '#3182ce'}
-        onMouseOut={(e) => e.target.style.color = '#4a5568'}
-      >
-        Política de Privacidad
-      </Link>
-      <span>|</span>
-      <Link 
-        to="/terms-conditions" 
-        style={linkStyle}
-        onMouseOver={(e) => e.target.style.color = '#3182ce'}
-        onMouseOut={(e) => e.target.style.color = '#4a5568'}
-      >
-        Términos y Condiciones
-      </Link>
+      <button
+          onClick={() => setOpenModal("privacy")}
+          style={{
+            background: "none",
+            border: "none",
+            color: "#4FC3A1",
+            cursor: "pointer",
+            marginRight: "16px",
+            textDecoration: "underline",
+          }}
+        >
+          Política de Privacidad
+        </button>
+        <button
+          onClick={() => setOpenModal("terms")}
+          style={{
+            background: "none",
+            border: "none",
+            color: "#4FC3A1",
+            cursor: "pointer",
+            textDecoration: "underline",
+          }}
+        >
+          Términos y Condiciones
+        </button>
+        {/* Modal dinámico */}
+        <Modal
+          title={
+            openModal === "privacy"
+              ? "Política de Privacidad"
+              : "Términos y Condiciones"
+          }
+          isOpen={openModal !== null}
+          onClose={() => setOpenModal(null)}
+        >
+          {openModal === "privacy" ? <PrivacyPolicy /> : <TermsAndConditions />}
+        </Modal>
     </footer>
   );
 }
