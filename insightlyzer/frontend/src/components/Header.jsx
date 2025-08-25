@@ -1,16 +1,34 @@
 // Header.jsx
-import React, { useState } from 'react';
-import { Link } from "react-router-dom";
+import React, { useState, useRef, useEffect } from 'react';
+import { Link, useNavigate } from "react-router-dom";
 import { Bell, User } from 'lucide-react';
 import Logo from '../assets/Logo.png'; // Asegúrate de que la ruta sea correcta
 
 const Header = () => {
   const [open, setOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false); // Estado para el menú de perfil
   const [notifications, setNotifications] = useState([
     { id: 1, text: "Nuevo comentario en tu post", link: "#" },
     { id: 2, text: "Tu reporte está listo para descargar", link: "#" },
     { id: 3, text: "Actualización disponible", link: "#" },
   ]);
+
+  const navigate = useNavigate();
+  const profileDropdownRef = useRef(null);
+
+  // Cerrar dropdown de perfil cuando se hace clic fuera
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target)) {
+        setProfileOpen(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const headerStyle = {
     width: '1920px',
@@ -64,6 +82,34 @@ const Header = () => {
     padding: '10px',
   };
 
+  const profileDropdownStyle = {
+    position: 'absolute',
+    top: '60px',
+    right: '0px',
+    width: '180px',
+    backgroundColor: 'white',
+    border: '1px solid #E2E8F0',
+    borderRadius: '8px',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+    zIndex: 100,
+    overflow: 'hidden',
+  };
+
+  const profileMenuItemStyle = {
+    width: '100%',
+    padding: '12px 16px',
+    border: 'none',
+    backgroundColor: 'transparent',
+    textAlign: 'left',
+    cursor: 'pointer',
+    fontSize: '14px',
+    fontFamily: '"Noto Sans", sans-serif',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    transition: 'background-color 0.2s ease',
+  };
+
   const notificationItemStyle = {
     fontSize: '14px',
     color: '#2D3748',
@@ -106,6 +152,27 @@ const Header = () => {
     setNotifications([]);
   };
 
+  const handleProfileClick = () => {
+    setProfileOpen(false);
+    navigate('/profile');
+  };
+
+  const handleLogout = () => {
+    setProfileOpen(false);
+    // Limpiar datos de sesión si los tienes
+    localStorage.removeItem('authToken');
+    sessionStorage.clear();
+    navigate('/');
+  };
+
+  const handleProfileMenuHover = (e, isEnter, isLogout = false) => {
+    if (isEnter) {
+      e.target.style.backgroundColor = isLogout ? '#fef2f2' : '#f8fafc';
+    } else {
+      e.target.style.backgroundColor = 'transparent';
+    }
+  };
+
   return (
     <header style={headerStyle}>
       {/* Logo */}
@@ -125,6 +192,7 @@ const Header = () => {
 
       {/* Iconos */}
       <div style={iconContainerStyle}>
+        {/* Notificaciones */}
         <div style={{ position: 'relative' }}>
           <button
             style={iconButtonStyle}
@@ -162,15 +230,87 @@ const Header = () => {
           )}
         </div>
 
-        <Link 
-          to="/profile" 
-          style={iconButtonStyle} 
-          onMouseOver={handleHover} 
-          onMouseOut={handleMouseOut} 
-          aria-label="Perfil de usuario"
-        >
-          <User size={24} color="#4A5568" />
-        </Link>
+        {/* Perfil con dropdown */}
+        <div style={{ position: 'relative' }} ref={profileDropdownRef}>
+          <button
+            style={iconButtonStyle}
+            onMouseOver={handleHover}
+            onMouseOut={handleMouseOut}
+            onClick={() => setProfileOpen(!profileOpen)}
+            aria-label="Perfil de usuario"
+          >
+            <User size={24} color="#4A5568" />
+          </button>
+
+          {/* Dropdown de perfil */}
+          {profileOpen && (
+            <div style={profileDropdownStyle}>
+              {/* Flecha del tooltip */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '-6px',
+                  right: '22px',
+                  width: '12px',
+                  height: '12px',
+                  backgroundColor: 'white',
+                  border: '1px solid #E2E8F0',
+                  borderBottom: 'none',
+                  borderRight: 'none',
+                  transform: 'rotate(45deg)',
+                }}
+              />
+
+              <div style={{ padding: '8px 0' }}>
+                {/* Ir a mi perfil */}
+                <button
+                  onClick={handleProfileClick}
+                  style={{
+                    ...profileMenuItemStyle,
+                    color: '#2d3748',
+                  }}
+                  onMouseEnter={(e) => handleProfileMenuHover(e, true, false)}
+                  onMouseLeave={(e) => handleProfileMenuHover(e, false, false)}
+                >
+                  {/* Icono de usuario */}
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" stroke="#4FC3A1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="#4FC3A1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  Ir a mi perfil
+                </button>
+
+                {/* Línea divisoria */}
+                <div
+                  style={{
+                    height: '1px',
+                    backgroundColor: '#e2e8f0',
+                    margin: '4px 0',
+                  }}
+                />
+
+                {/* Cerrar sesión */}
+                <button
+                  onClick={handleLogout}
+                  style={{
+                    ...profileMenuItemStyle,
+                    color: '#dc2626',
+                  }}
+                  onMouseEnter={(e) => handleProfileMenuHover(e, true, true)}
+                  onMouseLeave={(e) => handleProfileMenuHover(e, false, true)}
+                >
+                  {/* Icono de logout */}
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M16 17L21 12L16 7" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M21 12H9" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  Cerrar sesión
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );

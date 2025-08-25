@@ -1,11 +1,14 @@
-// src/features/auth/pages/LoginPage.jsx
-import { Link } from "react-router-dom"; 
+// src/features/auth/pages/LoginPage.jsx (Actualizado)
+import { Link, useNavigate } from "react-router-dom"; 
 import React, { useState } from "react";
 import Button from "../../../components/Button";
 import Input from "../../../components/Input";
 import Logo from "../../../assets/Logo.png";
+import { useAuth } from "../../../context/AuthContext";
 
 export default function LoginPage() {
+  const navigate = useNavigate();
+  const { login, loading, error } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -18,10 +21,15 @@ export default function LoginPage() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: integrar con backend (API login)
-    console.log("Login:", formData);
+    
+    const result = await login(formData.email, formData.password);
+    
+    if (result.success) {
+      navigate("/dashboard"); // Cambia por tu ruta de dashboard
+    }
+    // Los errores se manejan automáticamente por el contexto
   };
 
   return (
@@ -45,17 +53,17 @@ export default function LoginPage() {
           className="w-[454px] h-[303px] object-contain" 
         />
         
-        {/* Línea separadora vertical - 10px de separación, altura 540px */}
+        {/* Línea separadora vertical */}
         <div 
           style={{
             width: '1px',
             height: '540px',
-            backgroundColor: '#D1D5DB', // color gris similar a bg-gray-300
+            backgroundColor: '#D1D5DB',
             marginLeft: '10px'
           }}
         ></div>
 
-        {/* Formulario - 10px de separación de la línea */}
+        {/* Formulario */}
         <div style={{ marginLeft: '40px' }}>
           {/* Título */}
           <h1 
@@ -66,15 +74,28 @@ export default function LoginPage() {
               color: '#000000',
               margin: 0,
               padding: 0,
-              marginBottom: '30px' // Reducido para compensar inputs más pequeños
+              marginBottom: '30px'
             }}
           >
             Ingresa a tu cuenta
           </h1>
 
+          {/* Mostrar errores */}
+          {error && (
+            <div style={{
+              backgroundColor: '#fee2e2',
+              color: '#dc2626',
+              padding: '10px',
+              borderRadius: '6px',
+              marginBottom: '15px',
+              fontSize: '14px'
+            }}>
+              {error}
+            </div>
+          )}
+
           {/* Formulario */}
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column' }}>
-            {/* Campo de email - Ahora 500x35 */}
             <Input
               type="email"
               name="email"
@@ -82,9 +103,9 @@ export default function LoginPage() {
               onChange={handleChange}
               required
               placeholder="Correo Electrónico"
+              disabled={loading}
             />
 
-            {/* Campo de contraseña - Ahora 500x35 */}
             <div style={{ marginTop: '15px' }}>
               <Input
                 type="password"
@@ -94,13 +115,13 @@ export default function LoginPage() {
                 required
                 placeholder="Contraseña"
                 showPasswordToggle={true}
+                disabled={loading}
               />
             </div>
 
-            {/* Botón - Necesita actualizarse también para que coincida */}
             <div style={{ marginTop: '15px' }}>
-              <Button type="submit">
-                Entrar
+              <Button type="submit" disabled={loading}>
+                {loading ? 'Ingresando...' : 'Entrar'}
               </Button>
             </div>
           </form>

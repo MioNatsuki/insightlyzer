@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Input from "../../../components/Input";
 import Button from "../../../components/Button";
-import Logo from "../../../assets/Logo.png"; 
+import Logo from "../../../assets/Logo.png";
+import { useAuth } from "../../../context/AuthContext";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
+  const { register, loading, error } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -69,9 +71,6 @@ const RegisterPage = () => {
     
     setErrors(newErrors);
     
-    // El formulario es válido si:
-    // 1. Todos los campos están llenos
-    // 2. No hay errores de validación
     const allFieldsFilled = formData.email && formData.password && formData.confirmPassword;
     const noErrors = Object.keys(newErrors).length === 0;
     
@@ -82,13 +81,16 @@ const RegisterPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (isFormValid) {
-      console.log("Datos enviados:", formData);
-      // Navegar a la página de éxito
-      navigate("/successful");
+      const result = await register(formData.email, formData.password);
+      
+      if (result.success) {
+        navigate("/successful");
+      }
+      // Los errores se manejan automáticamente por el contexto
     }
   };
 
@@ -132,7 +134,6 @@ const RegisterPage = () => {
           borderRadius: '18px'
         }}
       >
-        {/* Agregar fuentes de Google Fonts */}
         <style>
           {`
             @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Noto+Sans:ital,wght@0,400;0,500;0,600;1,600&display=swap');
@@ -173,7 +174,21 @@ const RegisterPage = () => {
           </p>
         </div>
 
-        {/* Formulario con espaciado de 24px */}
+        {/* Mostrar errores del backend */}
+        {error && (
+          <div style={{
+            backgroundColor: '#fee2e2',
+            color: '#dc2626',
+            padding: '10px',
+            borderRadius: '6px',
+            marginTop: '15px',
+            fontSize: '14px'
+          }}>
+            {error}
+          </div>
+        )}
+
+        {/* Formulario */}
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px', flex: 1, justifyContent: 'flex-start', marginTop: '14px' }}>
           <div>
             <Input
@@ -182,8 +197,9 @@ const RegisterPage = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="Corre Electrónico"
+              placeholder="Correo Electrónico"
               required
+              disabled={loading}
               labelStyle={{ fontFamily: 'Noto Sans', fontWeight: '500', fontSize: '28px', color: '#9E9595' }}
               iconPosition="right"
               iconType="filled"
@@ -200,6 +216,7 @@ const RegisterPage = () => {
               onChange={handleChange}
               placeholder="Contraseña"
               required
+              disabled={loading}
               labelStyle={{ fontFamily: 'Noto Sans', fontWeight: '500', fontSize: '28px', color: '#9E9595' }}
               iconPosition="right"
               iconType="filled"
@@ -216,6 +233,7 @@ const RegisterPage = () => {
               onChange={handleChange}
               placeholder="Confirmar Contraseña"
               required
+              disabled={loading}
               labelStyle={{ fontFamily: 'Noto Sans', fontWeight: '500', fontSize: '28px', color: '#9E9595' }}
               iconPosition="right"
               iconType="filled"
@@ -226,9 +244,9 @@ const RegisterPage = () => {
           <Button 
             type="submit" 
             className="w-full"
-            disabled={!isFormValid}
+            disabled={!isFormValid || loading}
           >
-            Registrarse
+            {loading ? 'Registrando...' : 'Registrarse'}
           </Button>
         </form>
       </div>

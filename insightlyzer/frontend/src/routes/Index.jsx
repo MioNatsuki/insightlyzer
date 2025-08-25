@@ -9,11 +9,11 @@ import NewAnalysisPage from "../features/analysis/pages/NewAnalysisPage";
 import HistoryPage from "../features/history/pages/HistoryPage";
 import ProfilePage from "../features/profile/pages/ProfilePage";
 import SettingsPage from "../features/settings/pages/SettingsPage";
-import TermsAndConditions from "../features/legal/TermsAndConditions";
-import PrivacyPolicy from "../features/legal/PrivacyPolicy";
+import { AuthProvider } from "../context/AuthContext";
 
 export default function AppRoutes() {
   return (
+    <AuthProvider>
      <Router> 
       <Routes>
         {/*Públicas*/}
@@ -27,10 +27,9 @@ export default function AppRoutes() {
           <Route path="/history" element={<HistoryPage />} />
           <Route path="/profile" element={<ProfilePage/>} />
           <Route path="/settings" element={<SettingsPage/>} />
-          {/*<Route path="/privacy-policy" element={<PrivacyPolicy/>} />*/}
-          {/*<Route path="/terms-conditions" element={<TermsAndConditions/>} />*/}
       </Route>
       </Routes>
     </Router>
+    </AuthProvider>
   );
 }
