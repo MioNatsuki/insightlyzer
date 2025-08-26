@@ -1,4 +1,3 @@
-# routes/auth.py
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -20,20 +19,31 @@ def register(user: schemas.UsuarioCreate, db: Session = Depends(database.get_db)
             detail="El correo ya está registrado"
         )
     
-    # Crear nuevo usuario
+    # Crear nuevo usuario con registros relacionados
     hashed_password = auth.hash_password(user.password)
     new_user = models.Usuario(
         email=user.email,
-        password_hash=hashed_password
+        password_hash=hashed_password,
+        # Crear registros relacionados automáticamente
+        perfil=models.UsuarioPerfil(
+            email_notificaciones=user.email  # Usar el mismo email inicialmente
+        ),
+        settings=models.UsuarioSettings()
     )
     
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    
-    return new_user
+    try:
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+        return new_user
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error al crear usuario: {str(e)}"
+        )
 
-# Login con OAuth2 (recomendado)
+# Login con OAuth2
 @router.post("/token", response_model=schemas.Token)
 def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),

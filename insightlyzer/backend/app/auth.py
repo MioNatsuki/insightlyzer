@@ -3,10 +3,10 @@ from typing import Optional
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from fastapi import HTTPException, status
-from . import schemas  # Importar schemas para usar TokenData
+from . import schemas
 
 # Configuración
-SECRET_KEY = "tu_clave_secreta_muy_segura_aqui"  # ¡Cambia esto en producción!
+SECRET_KEY = "tu_clave_secreta_muy_segura_aqui_cambia_en_produccion"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -39,7 +39,7 @@ def verify_token(token: str, credentials_exception):
         email: str = payload.get("sub")
         if email is None:
             raise credentials_exception
-        token_data = schemas.TokenData(email=email)  # Usar schemas.TokenData
+        token_data = schemas.TokenData(email=email)
         return token_data
     except JWTError:
         raise credentials_exception

@@ -26,18 +26,66 @@ EXECUTE FUNCTION set_updated_at();
 
 
 -- ============================================
--- TABLA: Perfil del usuario
+-- TABLA: Perfil del usuario (COMPLETA)
 -- ============================================
+DROP TABLE IF EXISTS usuario_perfil CASCADE;
 CREATE TABLE usuario_perfil (
     id SERIAL PRIMARY KEY,
     usuario_id INT NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
-    nombre VARCHAR(150),
-    apellido VARCHAR(150),
+
+    -- Información personal
+    nombre VARCHAR(150) NOT NULL,
+    apellido_paterno VARCHAR(150) NOT NULL,
+    apellido_materno VARCHAR(150),
     telefono VARCHAR(20),
+    email_notificaciones VARCHAR(255),
+
+    -- Configuraciones y preferencias
+    preferencias_notificacion JSONB DEFAULT '{"email": true, "push": false, "sms": false}'::jsonb,
+
+    -- Información de actividad
+    miembro_desde TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    ultimo_acceso TIMESTAMP WITH TIME ZONE,
+    analisis_realizados INTEGER DEFAULT 0,
+
+    -- Contenido del perfil
     foto_url TEXT,
     bio TEXT,
-    actualizado_en TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+
+    -- Control del perfil
+    perfil_activo BOOLEAN DEFAULT true,
+
+    -- Timestamps
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+-- ============================================
+-- ÍNDICES
+-- ============================================
+CREATE INDEX idx_usuario_perfil_usuario_id ON usuario_perfil(usuario_id);
+CREATE INDEX idx_usuario_perfil_ultimo_acceso ON usuario_perfil(ultimo_acceso);
+CREATE INDEX idx_usuario_perfil_activo ON usuario_perfil(perfil_activo);
+-- ============================================
+-- TRIGGER PARA UPDATED_AT
+-- ============================================
+CREATE TRIGGER trigger_set_updated_at_perfil
+BEFORE UPDATE ON usuario_perfil
+FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();
+-- ============================================
+-- COMENTARIOS PARA DOCUMENTACIÓN
+-- ============================================
+COMMENT ON TABLE usuario_perfil IS 'Perfil detallado del usuario con información personal y preferencias';
+COMMENT ON COLUMN usuario_perfil.preferencias_notificacion IS 'JSON con preferencias: {"email": boolean, "push": boolean, "sms": boolean}';
+COMMENT ON COLUMN usuario_perfil.analisis_realizados IS 'Contador de análisis totales realizados por el usuario';
+COMMENT ON COLUMN usuario_perfil.perfil_activo IS 'Indica si el perfil está activo (para soft delete)';
+COMMENT ON COLUMN usuario_perfil.email_notificaciones IS 'Email específico para recibir notificaciones (puede diferir del email de login)';
+COMMENT ON COLUMN usuario_perfil.miembro_desde IS 'Fecha de registro del usuario en la plataforma';
+COMMENT ON COLUMN usuario_perfil.ultimo_acceso IS 'Última vez que el usuario accedió al sistema';
+-- ============================================
+-- CONSTRAINT ADICIONAL (OPCIONAL)
+-- ============================================
+ALTER TABLE usuario_perfil ADD CONSTRAINT unique_usuario_perfil UNIQUE(usuario_id);
 
 
 -- ============================================
