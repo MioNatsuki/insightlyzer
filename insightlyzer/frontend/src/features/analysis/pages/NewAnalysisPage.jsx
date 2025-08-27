@@ -224,7 +224,7 @@ export default function NewAnalysisPage() {
                   style={{ width: "20px", height: "20px", accentColor: "#F77CA2", cursor: "pointer" }}
                 />
                 <span style={{ fontFamily: '"Noto Sans", sans-serif', fontSize: "14px", fontWeight: "400", color: "#2d3748" }}>
-                  Pequeña (menos de 500 páginas / 1-3 Competidores)
+                  Pequeña (menos de 50 páginas / 1-3 Competidores)
                 </span>
               </label>
               <label style={{ display: "flex", alignItems: "center", gap: "6px", cursor: "pointer" }}>
@@ -236,7 +236,7 @@ export default function NewAnalysisPage() {
                   style={{ width: "20px", height: "20px", accentColor: "#F77CA2", cursor: "pointer" }}
                 />
                 <span style={{ fontFamily: '"Noto Sans", sans-serif', fontSize: "14px", fontWeight: "400", color: "#2d3748" }}>
-                  Mediano (501-1000 páginas / 4-5 Competidores)
+                  Mediano (50-100 páginas / 4-5 Competidores)
                 </span>
               </label>
             </div>
